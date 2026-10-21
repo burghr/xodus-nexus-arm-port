@@ -332,7 +332,10 @@ open_xodus() {
   fi
   local attempt
   for attempt in 1 2; do
-    setsid "$START_SCRIPT" >/dev/null 2>&1 </dev/null &
+    # Start it as its own systemd unit, like the app menu does. A background
+    # job of this script would keep its signal settings and terminal.
+    systemd-run --user --collect --quiet --unit="xodus-nexus-fex-$$-$attempt" "$START_SCRIPT" 2>/dev/null \
+      || setsid "$START_SCRIPT" >/dev/null 2>&1 </dev/null &
     info "Wait for Xodus Nexus to open. This can take 20 seconds."
     sleep 20
     if xodus_running; then
