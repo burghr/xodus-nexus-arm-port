@@ -1,6 +1,6 @@
 #!/bin/sh
 # Start the x86_64 Xodus Nexus AppImage through FEX on ArmadaOS.
-# https://github.com/burghr/xodus-nexus-armada
+# https://github.com/burghr/xodus-nexus-armada-arm
 
 LIB_DIR="$HOME/.local/lib/xodus-x86_64"
 APPIMAGE_FILE="${XODUS_NEXUS_APPIMAGE:-$HOME/.local/share/xodus-nexus-fex/Xodus-Nexus.AppImage}"

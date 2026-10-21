@@ -11,8 +11,8 @@ This project is not part of Xodus Nexus, Xodus, ArmadaOS, or Microsoft. Do not r
 Do these steps in Desktop Mode, in Konsole:
 
 ```bash
-git clone https://github.com/burghr/xodus-nexus-armada.git
-cd xodus-nexus-armada
+git clone https://github.com/burghr/xodus-nexus-armada-arm.git
+cd xodus-nexus-armada-arm
 ./install.sh
 ```
 

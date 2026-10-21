@@ -1,6 +1,6 @@
 #!/bin/bash
 # Install Xodus Nexus for ArmadaOS (ARM64) and run it through FEX.
-# https://github.com/burghr/xodus-nexus-armada
+# https://github.com/burghr/xodus-nexus-armada-arm
 #
 # Run it in Desktop Mode, in Konsole, as your normal user (not root).
 # It is safe to run again: each step skips what is already done.
@@ -154,8 +154,14 @@ install_start_script() {
   if [ ! -f "$ICON_FILE" ]; then
     local tmp
     tmp=$(mktemp -d)
-    (cd "$tmp" && "$APPIMAGE_FILE" --appimage-extract xodus-nexus.png >/dev/null 2>&1) || true
-    [ -f "$tmp/squashfs-root/xodus-nexus.png" ] && cp "$tmp/squashfs-root/xodus-nexus.png" "$ICON_FILE"
+    # The xodus-nexus.png at the AppImage root is a symlink, so extract its target.
+    local icon=usr/share/icons/hicolor/512x512/apps/xodus-nexus.png
+    (cd "$tmp" && "$APPIMAGE_FILE" --appimage-extract "$icon" >/dev/null 2>&1) || true
+    if [ -f "$tmp/squashfs-root/$icon" ]; then
+      cp "$tmp/squashfs-root/$icon" "$ICON_FILE"
+    else
+      info "Could not extract the icon. The shortcuts have no icon."
+    fi
     rm -rf "$tmp"
   fi
   cat > "$HOME/.local/share/applications/xodus-nexus-fex.desktop" <<EOF

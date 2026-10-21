@@ -107,7 +107,11 @@ def update(path, args):
     kept = [item for item in shortcuts if not (item[0] == T_MAP and matches(item[2], args.exe))]
     if args.action == "add":
         if len(kept) != len(shortcuts):
-            print(f"  already present: {path}")
+            if not set_icon(shortcuts, args.exe, args.icon):
+                print(f"  already present: {path}")
+                return
+            save(path, root)
+            print(f"  updated the icon in: {path}")
             return
         kept.append((T_MAP, b"", make_entry(args.name, args.exe, args.start_dir, args.icon)))
     elif len(kept) == len(shortcuts):
@@ -115,6 +119,29 @@ def update(path, args):
         return
     # Steam numbers the entries 0, 1, 2, ... with no gaps.
     root[0] = (T_MAP, root[0][1], [(k, str(n).encode(), v) for n, (k, _, v) in enumerate(kept)])
+    save(path, root)
+    print(f"  {'added to' if args.action == 'add' else 'removed from'}: {path}")
+
+
+def set_icon(shortcuts, exe, icon):
+    """Set the icon of the existing shortcut. Return True if it changed."""
+    if not icon:
+        return False
+    for _, _, entry in shortcuts:
+        if not matches(entry, exe):
+            continue
+        for n, (kind, key, value) in enumerate(entry):
+            if key.lower() == b"icon":
+                if value == icon.encode():
+                    return False
+                entry[n] = (kind, key, icon.encode())
+                return True
+        entry.append((T_STR, b"icon", icon.encode()))
+        return True
+    return False
+
+
+def save(path, root):
     if os.path.exists(path):
         shutil.copy2(path, f"{path}.bak-{time.strftime('%Y%m%d-%H%M%S')}")
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -122,7 +149,6 @@ def update(path, args):
     with open(temporary, "wb") as f:
         f.write(dump_map(root))
     os.replace(temporary, path)
-    print(f"  {'added to' if args.action == 'add' else 'removed from'}: {path}")
 
 
 def main():

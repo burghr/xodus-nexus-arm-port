@@ -1,7 +1,7 @@
 #!/bin/bash
 # Remove what install.sh added. Your KDE wallet, Google Chrome, your games,
 # and the Xodus Nexus settings in ~/.config/xodus-nexus stay as they are.
-# https://github.com/burghr/xodus-nexus-armada
+# https://github.com/burghr/xodus-nexus-armada-arm
 
 set -euo pipefail
 
