@@ -312,12 +312,37 @@ open_chrome_once() {
   info "Chrome opens now. Accept its terms, then close Chrome to continue."
   flatpak run "$installation" com.google.Chrome >/dev/null 2>&1 </dev/null || true
   touch "$DATA_DIR/chrome-opened"
+  # Chrome can still be closing after its window closes. Wait for it.
+  local i=0
+  while [ "$i" -lt 15 ] && flatpak ps --columns=application 2>/dev/null | grep '^com\.google\.Chrome$' >/dev/null; do
+    sleep 1
+    i=$((i + 1))
+  done
+}
+
+xodus_running() {
+  pgrep -f '[x]odus-nexus\.bin' >/dev/null
 }
 
 open_xodus() {
   step "Open Xodus Nexus"
-  setsid "$START_SCRIPT" >/dev/null 2>&1 </dev/null &
-  info "Xodus Nexus opens in a few seconds. Sign in there."
+  if xodus_running; then
+    info "Xodus Nexus is already open. Sign in there."
+    return
+  fi
+  local attempt
+  for attempt in 1 2; do
+    setsid "$START_SCRIPT" >/dev/null 2>&1 </dev/null &
+    info "Wait for Xodus Nexus to open. This can take 20 seconds."
+    sleep 20
+    if xodus_running; then
+      info "Xodus Nexus is open. Sign in there."
+      return
+    fi
+    [ "$attempt" = 1 ] && info "Xodus Nexus stopped during its start. Try again."
+  done
+  info "Xodus Nexus did not open. Open \"Xodus Nexus (FEX)\" from the app menu."
+  info "If it still does not open, run $START_SCRIPT in Konsole and read the error."
 }
 
 check_system
