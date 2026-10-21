@@ -211,8 +211,15 @@ try_empty_unlock() {
 setup_wallet() {
   step "Set up the KDE wallet"
   if ! secrets_running; then
-    busctl --user call org.kde.secretservicecompat / org.freedesktop.DBus.Peer Ping >/dev/null 2>&1 || true
-    sleep 2
+    info "Start the KDE wallet service."
+    # Ask D-Bus to start ksecretd. If that does not work, start it directly.
+    busctl --user call org.kde.secretservicecompat / org.freedesktop.DBus.Peer Ping >/dev/null 2>&1 \
+      || { [ -x /usr/bin/ksecretd ] && setsid /usr/bin/ksecretd >/dev/null 2>&1 </dev/null & }
+    local i=0
+    while [ "$i" -lt 15 ] && ! secrets_running; do
+      sleep 1
+      i=$((i + 1))
+    done
   fi
   secrets_running || fail "The KDE wallet service (ksecretd) does not run. Enable KDE Wallet, then run this again."
 
