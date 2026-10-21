@@ -87,6 +87,7 @@ Your games, your KDE wallet, Google Chrome, and the Xodus Nexus settings in `~/.
 | `keyring-unavailable` in Desktop Mode | Run `./install.sh` again to make the wallet. |
 | "Google Chrome was not found" | Run `./install.sh` again without `--no-chrome`. |
 | The app does not open | Run `~/.local/bin/xodus-nexus-fex` in Konsole and read the error. |
+| `git clone` asks for a username and password | The URL has a typo. GitHub asks for a sign-in when a repository does not exist. This repository is public and needs no sign-in. |
 
 ## License
 
