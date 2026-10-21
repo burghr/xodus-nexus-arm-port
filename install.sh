@@ -60,14 +60,15 @@ confirm() {
 }
 
 secrets_running() {
-  busctl --user list 2>/dev/null | grep -q '^org\.freedesktop\.secrets '
+  [ "$(busctl --user call org.freedesktop.DBus /org/freedesktop/DBus \
+    org.freedesktop.DBus NameHasOwner s org.freedesktop.secrets 2>/dev/null)" = "b true" ]
 }
 
 check_system() {
   step "Check the system"
   [ "$(id -u)" != 0 ] || fail "Do not run this as root. Run it as your normal user."
   [ "$(uname -m)" = aarch64 ] || fail "This is for ARM64 devices. On x86_64, use the normal Xodus Nexus AppImage."
-  ls /proc/sys/fs/binfmt_misc/ 2>/dev/null | grep -q '^FEX-x86_64$' \
+  [ -e /proc/sys/fs/binfmt_misc/FEX-x86_64 ] \
     || fail "FEX is not registered for x86_64 programs. This installer expects ArmadaOS."
   for tool in curl tar zstd python3 busctl secret-tool flatpak; do
     command -v "$tool" >/dev/null || fail "Missing tool: $tool"
@@ -100,7 +101,7 @@ install_appimage() {
     curl -fL --progress-bar -o "$APPIMAGE_FILE.tmp" "$url"
     sum_url=$(printf '%s' "$release" | python3 -I -c 'import json,sys; a=[x["browser_download_url"] for x in json.load(sys.stdin)["assets"] if x["name"].endswith("-x86_64.AppImage.sha512sum")]; print(a[0] if a else "")')
     if [ -n "$sum_url" ]; then
-      expected=$(curl -fsSL "$sum_url" | awk '{print $1; exit}')
+      expected=$(curl -fsSL "$sum_url" | awk 'NR == 1 {print $1}')
       actual=$(sha512sum "$APPIMAGE_FILE.tmp" | awk '{print $1}')
       [ "$expected" = "$actual" ] || { rm -f "$APPIMAGE_FILE.tmp"; fail "The SHA-512 checksum of the download is wrong."; }
       info "Checksum: OK"
@@ -119,7 +120,7 @@ install_nss() {
   fi
   local tmp pkg
   tmp=$(mktemp -d)
-  pkg=$(curl -fsSL "$ARCH_MIRROR/" | grep -oE 'nss-[0-9][^"]*-x86_64\.pkg\.tar\.zst' | head -1)
+  pkg=$(curl -fsSL "$ARCH_MIRROR/" | grep -oE 'nss-[0-9][^"]*-x86_64\.pkg\.tar\.zst' | sed -n 1p)
   [ -n "$pkg" ] || fail "Cannot find the nss package on the Arch mirror."
   info "Download $pkg"
   curl -fsSL -o "$tmp/$pkg" "$ARCH_MIRROR/$pkg"

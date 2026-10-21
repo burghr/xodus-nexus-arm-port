@@ -18,7 +18,8 @@ export LD_LIBRARY_PATH="$LIB_DIR${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export PATH="$LIB_DIR/bin:$PATH"
 
 secrets_running() {
-  busctl --user list 2>/dev/null | grep -q '^org\.freedesktop\.secrets '
+  [ "$(busctl --user call org.freedesktop.DBus /org/freedesktop/DBus \
+    org.freedesktop.DBus NameHasOwner s org.freedesktop.secrets 2>/dev/null)" = "b true" ]
 }
 
 # Game Mode does not run ksecretd, and D-Bus starts it without a display,
