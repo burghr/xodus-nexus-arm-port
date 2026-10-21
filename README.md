@@ -69,10 +69,6 @@ All files go in your home folder. ArmadaOS updates do not change them.
 
 A KDE wallet with no password is not encrypted with a password. Each program that runs as your user can read it. On a handheld that holds only game logins, this is a small risk. Do not keep other important passwords in this wallet.
 
-## Controller
-
-The controller can do nothing for the first few seconds after the window shows. Chromium does not report a controller until you push a button, and the launcher ignores the controller until its window has focus. Push **A**, and then wait a moment.
-
 ## Uninstall
 
 Close Steam first. Then run:
