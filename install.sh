@@ -21,6 +21,7 @@ APPIMAGE_SOURCE=""
 DO_CHROME=1
 DO_WALLET=1
 DO_STEAM=1
+DO_LAUNCH=1
 ASSUME_YES=0
 
 usage() {
@@ -31,6 +32,7 @@ Usage: ./install.sh [options]
   --no-chrome       Do not install the Google Chrome Flatpak.
   --no-wallet       Do not set up the KDE wallet.
   --no-steam        Do not add the Steam shortcut.
+  --no-launch       Do not open Chrome and Xodus Nexus at the end.
   -y, --yes         Answer yes to all questions.
   -h, --help        Show this help.
 EOF
@@ -42,6 +44,7 @@ while [ $# -gt 0 ]; do
     --no-chrome) DO_CHROME=0 ;;
     --no-wallet) DO_WALLET=0 ;;
     --no-steam) DO_STEAM=0 ;;
+    --no-launch) DO_LAUNCH=0 ;;
     -y|--yes) ASSUME_YES=1 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown option: $1" >&2; usage >&2; exit 2 ;;
@@ -291,6 +294,32 @@ add_steam_shortcut() {
   fi
 }
 
+open_chrome_once() {
+  step "Open Google Chrome one time"
+  local installation=""
+  if flatpak info --user com.google.Chrome >/dev/null 2>&1; then installation=--user
+  elif flatpak info --system com.google.Chrome >/dev/null 2>&1; then installation=--system
+  fi
+  if [ -z "$installation" ]; then
+    info "Chrome is not installed as a Flatpak. Skipped."
+    return
+  fi
+  if [ -f "$DATA_DIR/chrome-opened" ]; then
+    info "Already done."
+    return
+  fi
+  # The sign-in does not work until the Chrome terms are accepted one time.
+  info "Chrome opens now. Accept its terms, then close Chrome to continue."
+  flatpak run "$installation" com.google.Chrome >/dev/null 2>&1 </dev/null || true
+  touch "$DATA_DIR/chrome-opened"
+}
+
+open_xodus() {
+  step "Open Xodus Nexus"
+  setsid "$START_SCRIPT" >/dev/null 2>&1 </dev/null &
+  info "Xodus Nexus opens in a few seconds. Sign in there."
+}
+
 check_system
 install_appimage
 install_nss
@@ -299,8 +328,15 @@ install_start_script
 [ "$DO_CHROME" = 1 ] && install_chrome
 [ "$DO_WALLET" = 1 ] && setup_wallet
 [ "$DO_STEAM" = 1 ] && add_steam_shortcut
+if [ "$DO_LAUNCH" = 1 ]; then
+  open_chrome_once
+  open_xodus
+fi
 
 step "Done"
-info "1. Open \"Xodus Nexus (FEX)\" from the app menu, or run: $START_SCRIPT"
-info "2. Sign in one time in Desktop Mode."
-info "3. In Game Mode, start \"Xodus Nexus\" from your Steam library."
+if [ "$DO_LAUNCH" = 1 ]; then
+  info "1. Sign in to Xodus Nexus one time in Desktop Mode."
+else
+  info "1. Open \"Xodus Nexus (FEX)\" from the app menu, then sign in one time."
+fi
+info "2. In Game Mode, start \"Xodus Nexus\" from your Steam library."

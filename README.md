@@ -21,11 +21,14 @@ The installer asks before it closes Steam. If you do not have a KDE wallet yet, 
 1. Select **Classic** (not GPG).
 2. Leave the password fields **empty**.
 
-When the installer is done, do these steps:
+At the end, the installer opens Google Chrome one time. Accept the Chrome terms, then close Chrome. The Microsoft sign-in does not work until you accept them.
 
-1. Open **Xodus Nexus (FEX)** from the app menu.
-2. Sign in one time.
-3. In Game Mode, start **Xodus Nexus** from your Steam library.
+Then the installer opens Xodus Nexus. Do these steps:
+
+1. Sign in one time.
+2. In Game Mode, start **Xodus Nexus** from your Steam library.
+
+Later, open **Xodus Nexus (FEX)** from the app menu, or from Steam.
 
 ### Options
 
@@ -35,6 +38,7 @@ When the installer is done, do these steps:
 | `--no-chrome` | Do not install the Google Chrome Flatpak. |
 | `--no-wallet` | Do not set up the KDE wallet. |
 | `--no-steam` | Do not add the Steam shortcut. |
+| `--no-launch` | Do not open Chrome and Xodus Nexus at the end. |
 | `-y` | Answer yes to all questions. |
 
 You can run the installer again at any time. Each step skips what is already done.
