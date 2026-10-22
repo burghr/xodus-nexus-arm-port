@@ -268,10 +268,25 @@ setup_wallet() {
   alias=$(busctl --user call org.freedesktop.secrets /org/freedesktop/secrets \
     org.freedesktop.Secret.Service ReadAlias s default 2>/dev/null | awk '{print $2}' | tr -d '"')
   if [ -z "$alias" ] || [ "$alias" = "/" ]; then
-    info "You have no wallet yet. A KDE Wallet window opens now. In that window:"
+    info "You have no wallet yet. Xodus Nexus keeps your Microsoft sign-in in it."
+    info "Choose how to protect it:"
+    info "  - No password: nothing to type. Each program that runs as your user,"
+    info "    and each person with the device files, can read the sign-in."
+    info "  - A password: the wallet is encrypted. After each start of the device,"
+    info "    Xodus Nexus asks for the password one time. In Game Mode, press"
+    info "    Steam + X for the on-screen keyboard."
+    local use_password=0
+    # -y keeps the earlier behavior: a wallet with no password.
+    if [ "$ASSUME_YES" != 1 ] && confirm "Use a wallet password?"; then
+      use_password=1
+    fi
+    info "A KDE Wallet window opens now. In that window:"
     info "  1. Select Classic (not GPG)."
-    info "  2. Leave the password fields EMPTY."
-    info "Game Mode cannot show a password window, so the wallet must have no password."
+    if [ "$use_password" = 1 ]; then
+      info "  2. Type your new password in both password fields."
+    else
+      info "  2. Leave the password fields EMPTY."
+    fi
     printf 'xodus-nexus-armada' | secret-tool store --label="xodus-nexus-armada setup" app xodus-nexus-armada-setup \
       || fail "The wallet was not created."
     secret-tool clear app xodus-nexus-armada-setup || true
@@ -284,16 +299,18 @@ setup_wallet() {
   if wallet_locked; then
     try_empty_unlock
     if ! wallet_locked; then
-      info "Your wallet has no password. Game Mode can unlock it."
+      info "Your wallet has no password."
       return
     fi
-    info "Your wallet has a password, so Game Mode cannot unlock it."
+    info "Your wallet has a password. After each start of the device, Xodus Nexus"
+    info "asks for it one time. In Game Mode, press Steam + X for the on-screen keyboard."
   else
     info "Your wallet is unlocked now, so this cannot test for a password."
-    info "If you are signed out in Game Mode, the wallet has a password. Then run"
-    info "this again just after a restart, when the wallet is still locked."
+    info "With a password, Xodus Nexus asks for it one time after each start of the device."
     return
   fi
+  # Only on request: a password is a valid choice, so -y never removes it.
+  [ "$ASSUME_YES" = 1 ] && return 0
   confirm "Remove the wallet password? A KDE window asks for the old password." || return 0
   info "In the KDE window, type the old password, then leave the new password fields EMPTY."
   busctl --user --timeout=300 call org.kde.ksecretd /ksecretd org.kde.kwalletcompat \

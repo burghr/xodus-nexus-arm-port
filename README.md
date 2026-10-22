@@ -22,10 +22,10 @@ cd xodus-nexus-armada-arm
 ./install.sh
 ```
 
-The installer asks before it closes Steam. If you do not have a KDE wallet yet, a KDE Wallet window opens. In that window, do these steps:
+The installer asks before it closes Steam. If you do not have a KDE wallet yet, the installer asks if you want a wallet password (see [Wallet password](#wallet-password)). Then a KDE Wallet window opens. In that window, do these steps:
 
 1. Select **Classic** (not GPG).
-2. Leave the password fields **empty**.
+2. Type your password in both password fields, or leave them **empty** if you chose no password.
 
 At the end, the installer opens Google Chrome one time. Accept the Chrome terms, then close Chrome. The Microsoft sign-in does not work until you accept them.
 
@@ -82,16 +82,27 @@ You can run the installer again at any time. Each step skips what is already don
 | Installs a `pkexec` stand-in that only Xodus Nexus uses | At sign-in, the backend uses `pkexec` to read SMBIOS data. ARM devices have no SMBIOS data, so the password prompt fails again and again. The backend continues without the data. |
 | Installs the start script `~/.local/bin/xodus-nexus-fex` and a menu item | The start script puts the `pkexec` stand-in first in `PATH`, then starts the AppImage. |
 | Installs Google Chrome from Flathub for your user | The Microsoft sign-in uses Chrome. |
-| Makes a KDE wallet with no password, or offers to remove the password from your wallet | Xodus Nexus stores the sign-in in the wallet. Game Mode cannot show a password window, so only a wallet with no password can unlock there. |
+| Makes a KDE wallet, with or without a password | Xodus Nexus stores the sign-in in the wallet. |
 | Adds a non-Steam shortcut to Steam | Then you can start Xodus Nexus in Game Mode. |
 
 The file and folder names come from the earlier x86_64 install, so they still say `fex` and `x86_64`. They stay the same, so that the Steam shortcuts of earlier installs still work.
 
 All files go in your home folder. ArmadaOS updates do not change them.
 
-## Security
+## Wallet password
 
-A KDE wallet with no password is not encrypted with a password. Each program that runs as your user can read it. On a handheld that holds only game logins, this is a small risk. Do not keep other important passwords in this wallet.
+Xodus Nexus keeps your Microsoft sign-in in the KDE wallet. The installer lets you choose:
+
+| Choice | What you do | Security |
+|---|---|---|
+| **No password** (the default, and the choice with `-y`) | Nothing | The wallet is not encrypted with a password. Each program that runs as your user, and each person with the device files, can read the sign-in. |
+| **A password** | After each start of the device, Xodus Nexus asks for the password one time, also in Game Mode. Press **Steam + X** for the on-screen keyboard. | The wallet is encrypted with your password. |
+
+ArmadaOS logs you in automatically, so nothing can unlock the wallet at boot without the password. A password that is saved on the device to unlock the wallet automatically gives about the same protection as no password. So the installer does not do that.
+
+If your device is lost or stolen, go to [account.microsoft.com](https://account.microsoft.com/), and sign out of all devices. Do not keep other important passwords in a wallet with no password.
+
+To remove the password later, run `./install.sh` just after a start of the device, before you open Xodus Nexus. The wallet is still locked then, so the installer can find the password and offer to remove it.
 
 ## Uninstall
 
@@ -114,7 +125,7 @@ Each option shows what it removes and asks before it removes it.
 
 | Problem | Fix |
 |---|---|
-| You are signed out in Game Mode | Your wallet has a password. Restart the device, go to Desktop Mode, and run `./install.sh` again before you open any app. The wallet is still locked then, so the installer can find the password and offer to remove it. |
+| You are signed out in Game Mode | If your wallet has a password, type it in the window that Xodus Nexus shows. If no window shows, restart Xodus Nexus. |
 | `keyring-unavailable` in Desktop Mode | Run `./install.sh` again to make the wallet. |
 | "Google Chrome was not found" | Run `./install.sh` again without `--no-chrome`. |
 | The app does not open | Run `~/.local/bin/xodus-nexus-fex` in Konsole and read the error. |
