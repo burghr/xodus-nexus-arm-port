@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Add or remove a non-Steam shortcut in every Steam user's shortcuts.vdf.
 
-The fix-games action changes the game shortcuts from the Xodus Nexus "Add to
-Steam" button, so that they use the start script. Those shortcuts start the
-AppImage directly, and under FEX the AppImage does not open without the start
-script.
+The remove-nexus action removes the game shortcuts from the Xodus Nexus "Add
+to Steam" button. The uninstaller uses it, because those shortcuts start the
+AppImage that it removes.
 
 Steam must be closed, or it overwrites the file. The other shortcuts stay
 as they are. Each changed file gets a backup next to it.
@@ -107,24 +106,11 @@ def matches(entry, exe):
     return value.decode(errors="replace").strip('"') == exe
 
 
-def set_field(entry, name, kind, value):
-    for n, (k, key, _) in enumerate(entry):
-        if key.lower() == name.lower():
-            entry[n] = (k, key, value)
-            return
-    entry.append((kind, name, value))
-
-
-def steam_argument(value):
-    """Quote one argument the same way that Nexus does."""
-    return '"' + "".join("\\" + c if c in '"`$\\' else c for c in value) + '"'
-
-
 def nexus_launch(entry):
     """Return (prefix, profile, game id or None) for a Nexus shortcut, else None.
 
     The prefix is the part of the launch options up to %command%. ArmadaOS
-    adds "armada-game-launch %command%" to each shortcut, so keep it.
+    adds "armada-game-launch %command%" to each shortcut.
     """
     exe = (field(entry, b"Exe") or b"").decode(errors="replace")
     options = (field(entry, b"LaunchOptions") or b"").decode(errors="replace")
@@ -151,44 +137,22 @@ def nexus_launch(entry):
     return None
 
 
-def fix_games(path, args):
+def remove_nexus(path):
+    """Remove the shortcuts that start the Nexus launch-game or launch-nexus script."""
     root = load(path)
     shortcuts = root[0][2]
-    exe = f'"{args.exe}"'.encode()
-    seen = set()
-    kept = []
-    changed = 0
-    for item in shortcuts:
-        entry = item[2]
-        launch = nexus_launch(entry) if item[0] == T_MAP else None
-        if launch:
-            prefix, profile, game = launch
-            options = prefix + "--nexus-profile " + steam_argument(profile)
-            if game:
-                options += " --launch-game " + steam_argument(game)
-            set_field(entry, b"Exe", T_STR, exe)
-            set_field(entry, b"StartDir", T_STR, f'"{args.start_dir}"'.encode())
-            set_field(entry, b"LaunchOptions", T_STR, options.encode())
-            changed += 1
-        if item[0] == T_MAP and field(entry, b"Exe") == exe:
-            key = field(entry, b"LaunchOptions")
-            # Nexus can add the same game again after a fix. Keep one entry.
-            if key and key in seen:
-                changed += 1
-                continue
-            seen.add(key)
-        kept.append(item)
-    if not changed:
-        print(f"  no game shortcuts to change: {path}")
+    kept = [item for item in shortcuts if not (item[0] == T_MAP and nexus_launch(item[2]))]
+    if len(kept) == len(shortcuts):
+        print(f"  no Nexus game shortcuts: {path}")
         return
     root[0] = (T_MAP, root[0][1], [(k, str(n).encode(), v) for n, (k, _, v) in enumerate(kept)])
     save(path, root)
-    print(f"  changed {changed} game shortcut(s) in: {path}")
+    print(f"  removed {len(shortcuts) - len(kept)} Nexus game shortcut(s) from: {path}")
 
 
 def update(path, args):
-    if args.action == "fix-games":
-        fix_games(path, args)
+    if args.action == "remove-nexus":
+        remove_nexus(path)
         return
     root = load(path)
     shortcuts = root[0][2]
@@ -241,13 +205,15 @@ def save(path, root):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["add", "remove", "fix-games"])
-    parser.add_argument("--exe", required=True)
+    parser.add_argument("action", choices=["add", "remove", "remove-nexus"])
+    parser.add_argument("--exe", default="")
     parser.add_argument("--name", default="Xodus Nexus")
     parser.add_argument("--start-dir", default="")
     parser.add_argument("--icon", default="")
     parser.add_argument("--steam-root", default=os.path.expanduser("~/.local/share/Steam"))
     args = parser.parse_args()
+    if args.action != "remove-nexus" and not args.exe:
+        parser.error("--exe is required")
     args.start_dir = args.start_dir or os.path.dirname(args.exe)
 
     users = [d for d in glob.glob(os.path.join(args.steam_root, "userdata", "*"))

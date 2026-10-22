@@ -1,6 +1,9 @@
 #!/bin/sh
-# Start the x86_64 Xodus Nexus AppImage through FEX on ArmadaOS.
+# Start the native arm64 Xodus Nexus AppImage on ArmadaOS.
 # https://github.com/burghr/xodus-nexus-armada-arm
+#
+# The name and the paths come from the earlier x86_64 install. Keep them, so
+# that the Steam shortcuts of existing installs still work.
 
 LIB_DIR="$HOME/.local/lib/xodus-x86_64"
 APPIMAGE_FILE="${XODUS_NEXUS_APPIMAGE:-$HOME/.local/share/xodus-nexus-fex/Xodus-Nexus.AppImage}"
@@ -11,64 +14,8 @@ if [ ! -f "$APPIMAGE_FILE" ]; then
   exit 1
 fi
 
-# The FEX RootFS has no Mozilla NSS, so add the x86_64 copy.
-export LD_LIBRARY_PATH="$LIB_DIR${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-# Use the pkexec stand-in. ARM devices have no SMBIOS data, so the real
-# pkexec prompt for it fails again and again.
+# Use the pkexec stand-in. At sign-in, the backend uses pkexec to read SMBIOS
+# data. ARM devices have no SMBIOS data, so the real pkexec prompt for it
+# fails again and again. Xodus Nexus opens the KDE wallet itself.
 export PATH="$LIB_DIR/bin:$PATH"
-
-secrets_running() {
-  [ "$(busctl --user call org.freedesktop.DBus /org/freedesktop/DBus \
-    org.freedesktop.DBus NameHasOwner s org.freedesktop.secrets 2>/dev/null)" = "b true" ]
-}
-
-# Game Mode does not run ksecretd, and D-Bus starts it without a display,
-# so it fails. Start it here with the display that Steam gives.
-started_ksecretd=""
-if ! secrets_running && [ -x /usr/bin/ksecretd ]; then
-  /usr/bin/ksecretd >/dev/null 2>&1 </dev/null &
-  started_ksecretd=$!
-  i=0
-  while [ "$i" -lt 10 ] && ! secrets_running; do
-    sleep 1
-    i=$((i + 1))
-  done
-fi
-
-# The launcher does not unlock the wallet, and Game Mode has no login that
-# unlocks it. A wallet with an empty password unlocks here with no window.
-unlock_wallet() {
-  collection=/org/freedesktop/secrets/aliases/default
-  reply=$(busctl --user call org.freedesktop.secrets /org/freedesktop/secrets \
-    org.freedesktop.Secret.Service Unlock ao 1 "$collection" 2>/dev/null) || return
-  prompt=$(printf '%s' "$reply" | grep -oE '"/org/freedesktop/secrets/prompt/[^"]+"' | tr -d '"')
-  [ -n "$prompt" ] || return
-  busctl --user call org.freedesktop.secrets "$prompt" \
-    org.freedesktop.Secret.Prompt Prompt s "" >/dev/null 2>&1
-  i=0
-  while [ "$i" -lt 5 ]; do
-    locked=$(busctl --user get-property org.freedesktop.secrets "$collection" \
-      org.freedesktop.Secret.Collection Locked 2>/dev/null)
-    [ "$locked" = "b true" ] || return
-    sleep 1
-    i=$((i + 1))
-  done
-}
-secrets_running && unlock_wallet
-
-# The Chromium sandbox crashes under FEX.
-# Under FEX, the app sometimes crashes (SIGSEGV) at start. The next start
-# usually works, so try one more time if it crashes in the first 15 seconds.
-attempt=1
-while :; do
-  started=$(date +%s)
-  "$APPIMAGE_FILE" --no-sandbox "$@"
-  status=$?
-  [ "$status" = 139 ] && [ "$attempt" = 1 ] && [ $(($(date +%s) - started)) -lt 15 ] || break
-  echo "Xodus Nexus crashed at start. Starting it again." >&2
-  attempt=2
-done
-
-# Stop ksecretd after the app closes, so that Steam sees the game end.
-[ -n "$started_ksecretd" ] && kill "$started_ksecretd" 2>/dev/null
-exit "$status"
+exec "$APPIMAGE_FILE" "$@"
