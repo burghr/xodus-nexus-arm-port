@@ -1,12 +1,16 @@
 # Xodus Nexus on ArmadaOS (ARM64)
 
+> **An unofficial side project.** This is not an official port of Xodus Nexus. It is not part of Xodus Nexus, Xodus, ArmadaOS, or Microsoft. I made it because I wanted PC Game Pass on my ARM handheld, and I maintain it in my free time. I do my best to answer bug reports and to keep up with new Xodus Nexus releases, but sometimes it may take longer than you like.
+>
+> The scripts and the arm64 build are provided as is, with no warranty. If something does not work, please [open an issue here](https://github.com/burghr/xodus-nexus-armada-arm/issues). Do not report problems with this setup to the Xodus Nexus developer.
+>
+> All the real work is by the [Xodus Nexus](https://github.com/domsvoboda/xodus-nexus), [ArmadaOS](https://armadaos.dev/), and [FEX](https://github.com/FEX-Emu/FEX) teams. Thank you to them.
+
 These scripts install [Xodus Nexus](https://github.com/domsvoboda/xodus-nexus) on an ARM64 handheld with [ArmadaOS](https://armadaos.dev/). Xodus Nexus is a launcher for Microsoft Store and PC Game Pass games on Linux. Its official build is available only for x86_64.
 
 The installer uses a native arm64 build of the launcher from the [xodus-nexus-arm](https://github.com/burghr/xodus-nexus-arm) fork. The backend, the Wine runtime, and the games are still x86_64, and they run through the [FEX](https://github.com/FEX-Emu/FEX) x86 translation layer that ArmadaOS includes.
 
 Tested on an AYN Odin 3 (Snapdragon 8 Elite) with ArmadaOS 20261010 and Xodus Nexus 0.3.10. Sign-in, the game library, **Add to Steam**, and games work in Desktop Mode and in Game Mode.
-
-This project is not part of Xodus Nexus, Xodus, ArmadaOS, or Microsoft. Do not report problems with this setup to the Xodus Nexus developer.
 
 ## Install
 
