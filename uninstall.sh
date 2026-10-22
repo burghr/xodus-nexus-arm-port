@@ -106,6 +106,8 @@ echo "Removed the Xodus Nexus AppImage, the start script, and the shortcuts."
 
 if [ "$REMOVE_GAMES" = 1 ]; then
   for folder in "${folders[@]}"; do rm -rf -- "$folder"; done
+  # Remove the game folder too, but only if it is empty now.
+  rmdir -- "$(dirname "${folders[0]}")" 2>/dev/null || true
   echo "Removed ${#folders[@]} game(s)."
 fi
 if [ "$REMOVE_DATA" = 1 ]; then
