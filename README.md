@@ -28,7 +28,8 @@ At the end, the installer opens Google Chrome one time. Accept the Chrome terms,
 Then the installer opens Xodus Nexus. Do these steps:
 
 1. Sign in one time.
-2. In Game Mode, start **Xodus Nexus** from your Steam library.
+2. Open **Settings**, then select **Install Nexus runtime**. Games do not start without the runtime. Do this one time.
+3. In Game Mode, start **Xodus Nexus** from your Steam library.
 
 Later, open **Xodus Nexus** from the app menu, or from Steam.
 

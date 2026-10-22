@@ -407,5 +407,7 @@ if [ "$DO_LAUNCH" = 1 ]; then
 else
   info "1. Open \"Xodus Nexus\" from the app menu, then sign in one time."
 fi
-info "2. In Game Mode, start \"Xodus Nexus\" from your Steam library."
-info "3. To update Xodus Nexus, run ./install.sh again."
+info "2. In Xodus Nexus, open Settings, then select \"Install Nexus runtime\"."
+info "   Games do not start without the runtime. Do this one time."
+info "3. In Game Mode, start \"Xodus Nexus\" from your Steam library."
+info "4. To update Xodus Nexus, run ./install.sh again."
