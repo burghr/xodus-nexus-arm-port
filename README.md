@@ -30,6 +30,19 @@ Then the installer opens Xodus Nexus. Do these steps:
 
 Later, open **Xodus Nexus (FEX)** from the app menu, or from Steam.
 
+### Games that you add to Steam
+
+You can use the **Add to Steam** button in Xodus Nexus to put one game in your Steam library. That shortcut starts the AppImage directly, without the start script, so the game does not start through FEX. Each time after you add a game, do these steps in Desktop Mode, in Konsole:
+
+```bash
+cd xodus-nexus-armada-arm
+./install.sh --fix-shortcuts
+```
+
+The installer asks before it closes Steam. It changes the game shortcuts to use the start script, then opens Steam again. Your other shortcuts do not change.
+
+After the fix, Xodus Nexus does not find the game in Steam. Do not click **Add to Steam** again for that game. If you do, run `./install.sh --fix-shortcuts` again. It removes the second shortcut.
+
 ### Options
 
 | Option | What it does |
@@ -39,6 +52,7 @@ Later, open **Xodus Nexus (FEX)** from the app menu, or from Steam.
 | `--no-wallet` | Do not set up the KDE wallet. |
 | `--no-steam` | Do not add the Steam shortcut. |
 | `--no-launch` | Do not open Chrome and Xodus Nexus at the end. |
+| `--fix-shortcuts` | Only fix the game shortcuts from the Xodus Nexus **Add to Steam** button. |
 | `-y` | Answer yes to all questions. |
 
 You can run the installer again at any time. Each step skips what is already done.
@@ -54,6 +68,7 @@ You can run the installer again at any time. Each step skips what is already don
 | Installs Google Chrome from Flathub for your user | The Microsoft sign-in uses Chrome. |
 | Makes a KDE wallet with no password, or offers to remove the password from your wallet | Xodus Nexus stores the sign-in in the wallet. Game Mode cannot show a password window, so only a wallet with no password can unlock there. |
 | Adds a non-Steam shortcut to Steam | Then you can start Xodus Nexus in Game Mode. |
+| Changes the game shortcuts from **Add to Steam** to use the start script | Without the start script, those games do not start. |
 
 The start script does these steps each time:
 
@@ -77,7 +92,7 @@ Close Steam first. Then run:
 ./uninstall.sh
 ```
 
-Your games, your KDE wallet, Google Chrome, and the Xodus Nexus settings in `~/.config/xodus-nexus` stay.
+The uninstaller also removes the game shortcuts that use the start script. Your games, your KDE wallet, Google Chrome, and the Xodus Nexus settings in `~/.config/xodus-nexus` stay.
 
 ## Troubleshooting
 
@@ -86,6 +101,7 @@ Your games, your KDE wallet, Google Chrome, and the Xodus Nexus settings in `~/.
 | You are signed out in Game Mode | Your wallet has a password. Restart the device, go to Desktop Mode, and run `./install.sh` again before you open any app. The wallet is still locked then, so the installer can find the password and offer to remove it. |
 | `keyring-unavailable` in Desktop Mode | Run `./install.sh` again to make the wallet. |
 | "Google Chrome was not found" | Run `./install.sh` again without `--no-chrome`. |
+| A game from **Add to Steam** starts, then Steam shows the library again | Run `./install.sh --fix-shortcuts` in Desktop Mode. |
 | The app does not open | Run `~/.local/bin/xodus-nexus-fex` in Konsole and read the error. |
 | `git clone` asks for a username and password | The URL has a typo. GitHub asks for a sign-in when a repository does not exist. This repository is public and needs no sign-in. |
 

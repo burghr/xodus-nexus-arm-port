@@ -9,7 +9,7 @@ SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 START_SCRIPT="$HOME/.local/bin/xodus-nexus-fex"
 
 if pgrep -x steam >/dev/null; then
-  echo "Close Steam first, so that the Steam shortcut can be removed." >&2
+  echo "Close Steam first, so that the Steam shortcuts can be removed. This also removes the game shortcuts that use the start script." >&2
   exit 1
 fi
 

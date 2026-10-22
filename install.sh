@@ -22,6 +22,7 @@ DO_CHROME=1
 DO_WALLET=1
 DO_STEAM=1
 DO_LAUNCH=1
+FIX_ONLY=0
 ASSUME_YES=0
 
 usage() {
@@ -33,6 +34,8 @@ Usage: ./install.sh [options]
   --no-wallet       Do not set up the KDE wallet.
   --no-steam        Do not add the Steam shortcut.
   --no-launch       Do not open Chrome and Xodus Nexus at the end.
+  --fix-shortcuts   Only fix the game shortcuts from the Xodus Nexus "Add to Steam"
+                    button. Do this each time after you add a game to Steam.
   -y, --yes         Answer yes to all questions.
   -h, --help        Show this help.
 EOF
@@ -45,6 +48,7 @@ while [ $# -gt 0 ]; do
     --no-wallet) DO_WALLET=0 ;;
     --no-steam) DO_STEAM=0 ;;
     --no-launch) DO_LAUNCH=0 ;;
+    --fix-shortcuts) FIX_ONLY=1 ;;
     -y|--yes) ASSUME_YES=1 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown option: $1" >&2; usage >&2; exit 2 ;;
@@ -270,28 +274,53 @@ steam_command() {
   fi
 }
 
+# Steam overwrites shortcuts.vdf when it closes, so close it first.
+# Return 1 if the user does not want to close Steam.
+STEAM_CLOSED=0
+close_steam() {
+  pgrep -x steam >/dev/null || return 0
+  info "Steam must be closed while its shortcuts change."
+  confirm "Close Steam now? It opens again after." || { info "Skipped. Run this again when Steam is closed."; return 1; }
+  "$(steam_command)" -shutdown >/dev/null 2>&1 || true
+  local i=0
+  while pgrep -x steam >/dev/null && [ "$i" -lt 30 ]; do sleep 2; i=$((i + 1)); done
+  pgrep -x steam >/dev/null && fail "Steam did not close."
+  STEAM_CLOSED=1
+}
+
+reopen_steam() {
+  [ "$STEAM_CLOSED" = 1 ] || return 0
+  if [ -x /usr/libexec/armada/launch-steam ]; then
+    setsid /usr/libexec/armada/launch-steam --desktop >/dev/null 2>&1 </dev/null &
+  else
+    setsid "$(steam_command)" >/dev/null 2>&1 </dev/null &
+  fi
+  STEAM_CLOSED=0
+  info "Steam is opening again."
+}
+
+# The "Add to Steam" button in Xodus Nexus makes shortcuts that start the
+# AppImage directly. Change them to use the start script.
+fix_game_shortcuts() {
+  python3 -I "$SRC_DIR/steam_shortcut.py" fix-games --exe "$START_SCRIPT"
+}
+
 add_steam_shortcut() {
   step "Add Xodus Nexus to Steam"
   [ -d "$HOME/.local/share/Steam/userdata" ] || { info "Steam has no user yet. Sign in to Steam, then run this again."; return; }
-  local reopen=0
-  if pgrep -x steam >/dev/null; then
-    info "Steam must be closed while the shortcut is added."
-    confirm "Close Steam now? It opens again after." || { info "Skipped. Run this again when Steam is closed."; return; }
-    "$(steam_command)" -shutdown >/dev/null 2>&1 || true
-    local i=0
-    while pgrep -x steam >/dev/null && [ "$i" -lt 30 ]; do sleep 2; i=$((i + 1)); done
-    pgrep -x steam >/dev/null && fail "Steam did not close."
-    reopen=1
-  fi
+  close_steam || return 0
   python3 -I "$SRC_DIR/steam_shortcut.py" add --name "Xodus Nexus" --exe "$START_SCRIPT" --icon "$ICON_FILE"
-  if [ "$reopen" = 1 ]; then
-    if [ -x /usr/libexec/armada/launch-steam ]; then
-      setsid /usr/libexec/armada/launch-steam --desktop >/dev/null 2>&1 </dev/null &
-    else
-      setsid "$(steam_command)" >/dev/null 2>&1 </dev/null &
-    fi
-    info "Steam is opening again."
-  fi
+  fix_game_shortcuts
+  reopen_steam
+}
+
+fix_shortcuts_only() {
+  step "Fix the game shortcuts in Steam"
+  [ -x "$START_SCRIPT" ] || fail "The start script is not installed. Run ./install.sh first."
+  [ -d "$HOME/.local/share/Steam/userdata" ] || fail "Steam has no user yet."
+  close_steam || exit 0
+  fix_game_shortcuts
+  reopen_steam
 }
 
 open_chrome_once() {
@@ -349,6 +378,10 @@ open_xodus() {
 }
 
 check_system
+if [ "$FIX_ONLY" = 1 ]; then
+  fix_shortcuts_only
+  exit 0
+fi
 install_appimage
 install_nss
 install_pkexec_stub
@@ -368,3 +401,4 @@ else
   info "1. Open \"Xodus Nexus (FEX)\" from the app menu, then sign in one time."
 fi
 info "2. In Game Mode, start \"Xodus Nexus\" from your Steam library."
+info "3. After you use \"Add to Steam\" in Xodus Nexus, run ./install.sh --fix-shortcuts."

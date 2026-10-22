@@ -57,12 +57,18 @@ unlock_wallet() {
 secrets_running && unlock_wallet
 
 # The Chromium sandbox crashes under FEX.
-if [ -z "$started_ksecretd" ]; then
-  exec "$APPIMAGE_FILE" --no-sandbox "$@"
-fi
+# Under FEX, the app sometimes crashes (SIGSEGV) at start. The next start
+# usually works, so try one more time if it crashes in the first 15 seconds.
+attempt=1
+while :; do
+  started=$(date +%s)
+  "$APPIMAGE_FILE" --no-sandbox "$@"
+  status=$?
+  [ "$status" = 139 ] && [ "$attempt" = 1 ] && [ $(($(date +%s) - started)) -lt 15 ] || break
+  echo "Xodus Nexus crashed at start. Starting it again." >&2
+  attempt=2
+done
 
 # Stop ksecretd after the app closes, so that Steam sees the game end.
-"$APPIMAGE_FILE" --no-sandbox "$@"
-status=$?
-kill "$started_ksecretd" 2>/dev/null
+[ -n "$started_ksecretd" ] && kill "$started_ksecretd" 2>/dev/null
 exit "$status"
