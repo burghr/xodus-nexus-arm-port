@@ -106,8 +106,12 @@ echo "Removed the Xodus Nexus AppImage, the start script, and the shortcuts."
 
 if [ "$REMOVE_GAMES" = 1 ]; then
   for folder in "${folders[@]}"; do rm -rf -- "$folder"; done
-  # Remove the game folder too, but only if it is empty now.
-  rmdir -- "$(dirname "${folders[0]}")" 2>/dev/null || true
+  # The backend makes .xodus-chain-* work folders in the game folder when it
+  # starts a game. A run that ends badly leaves them. Then remove the game
+  # folder too, but only if it is empty now.
+  game_root=$(dirname "${folders[0]}")
+  rm -rf -- "$game_root"/.xodus-chain-*
+  rmdir -- "$game_root" 2>/dev/null || true
   echo "Removed ${#folders[@]} game(s)."
 fi
 if [ "$REMOVE_DATA" = 1 ]; then
