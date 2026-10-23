@@ -433,4 +433,4 @@ fi
 info "2. In Xodus Nexus, open Settings, then select \"Install Nexus runtime\"."
 info "   Games do not start without the runtime. Do this one time."
 info "3. In Game Mode, start \"Xodus Nexus\" from your Steam library."
-info "4. Xodus Nexus shows new updates when it starts. Install them in Settings, in Desktop Mode."
+info "4. Xodus Nexus shows new updates when it starts. Install them in Settings."

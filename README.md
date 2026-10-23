@@ -51,7 +51,7 @@ Xodus Nexus checks for a new arm64 build each time that it starts. If there is o
 2. Install the launcher update.
 3. Select **Restart**.
 
-Install updates in Desktop Mode. In Game Mode, the restarted launcher runs outside of Steam, so Game Mode may not show it. The update checks the download, and it keeps a backup of the earlier build.
+The update works in Desktop Mode and in Game Mode. It checks the download, and it keeps a backup of the earlier build.
 
 Builds before `v0.3.11-arm.2` cannot update themselves. If you installed one of them, run the installer one time in Desktop Mode:
 
@@ -140,7 +140,6 @@ Read this before you open an issue. Many common problems have a fix here.
 | In Xodus Nexus, up or down on the controller does nothing on some buttons | The launcher moves up or down only to a button that is directly above or below. Press left or right first. This behavior comes from Xodus Nexus itself. |
 | A game works on an x86_64 PC, but not here | Games run through the FEX translation layer, so some games do not work on ARM. Games with kernel anti-cheat probably do not work. Please send a [game report](https://github.com/burghr/xodus-nexus-armada-arm/issues/new?template=02-game-report.yml), also for games that work. |
 | A game shows "exited with code 255" when you quit it | Some games, for example DREDGE, end with that code also after a normal quit. If the game ran and saved normally, you can ignore it. |
-| After a launcher update in Game Mode, the launcher may not open again | Install launcher updates in Desktop Mode. |
 
 Tested devices: the AYN Odin 3. A user reported that an earlier version works on the Retroid Pocket 6. Reports from other devices are welcome.
 
