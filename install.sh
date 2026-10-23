@@ -1,7 +1,7 @@
 #!/bin/bash
 # Install the native arm64 build of Xodus Nexus on ArmadaOS (ARM64).
 # The backend, the Wine runtime, and the games are x86_64 and run through FEX.
-# https://github.com/burghr/xodus-nexus-armada-arm
+# https://github.com/burghr/xodus-nexus-arm-port
 #
 # Run it in Desktop Mode, in Konsole, as your normal user (not root).
 # It is safe to run again: each step skips what is already done, and a new

@@ -2,7 +2,7 @@
 
 > **An unofficial side project.** This is not an official port of Xodus Nexus. It is not part of Xodus Nexus, Xodus, ArmadaOS, or Microsoft. I made it because I wanted PC Game Pass on my ARM handheld, and I maintain it in my free time. I do my best to answer bug reports and to keep up with new Xodus Nexus releases, but sometimes it may take longer than you like.
 >
-> The scripts and the arm64 build are provided as is, with no warranty. If something does not work, please [open an issue here](https://github.com/burghr/xodus-nexus-armada-arm/issues). Do not report problems with this setup to the Xodus Nexus developer.
+> The scripts and the arm64 build are provided as is, with no warranty. If something does not work, please [open an issue here](https://github.com/burghr/xodus-nexus-arm-port/issues). Do not report problems with this setup to the Xodus Nexus developer.
 >
 > All the real work is by the [Xodus Nexus](https://github.com/domsvoboda/xodus-nexus), [ArmadaOS](https://armadaos.dev/), and [FEX](https://github.com/FEX-Emu/FEX) teams. Thank you to them.
 
@@ -17,8 +17,8 @@ Tested on an AYN Odin 3 (Snapdragon 8 Elite) with ArmadaOS 20261010 and Xodus Ne
 Do these steps in Desktop Mode, in Konsole:
 
 ```bash
-git clone https://github.com/burghr/xodus-nexus-armada-arm.git
-cd xodus-nexus-armada-arm
+git clone https://github.com/burghr/xodus-nexus-arm-port.git
+cd xodus-nexus-arm-port
 ./install.sh
 ```
 
@@ -56,7 +56,7 @@ The update works in Desktop Mode and in Game Mode. It checks the download, and i
 Builds before `v0.3.11-arm.2` cannot update themselves. If you installed one of them, run the installer one time in Desktop Mode:
 
 ```bash
-cd xodus-nexus-armada-arm
+cd xodus-nexus-arm-port
 git pull
 ./install.sh
 ```
@@ -138,7 +138,7 @@ Read this before you open an issue. Many common problems have a fix here.
 | A download or a game start fails with `content-http 401` or "Microsoft content licensing rejected sign-in" | In **Settings**, update the backend to 0.2.11 or later. Then select **Sign out**, and sign in again. A sign-in again without a sign out first is not always enough. |
 | A game does not see the controller, or the controller acts like a mouse | Steam gave the game the **Web Browser** controller layout. In the game, press the Steam button. Open **Controller Settings**, select **Browse Layouts**, then **Templates**, then **Gamepad**. Steam saves it for that game. |
 | In Xodus Nexus, up or down on the controller does nothing on some buttons | The launcher moves up or down only to a button that is directly above or below. Press left or right first. This behavior comes from Xodus Nexus itself. |
-| A game works on an x86_64 PC, but not here | Games run through the FEX translation layer, so some games do not work on ARM. Games with kernel anti-cheat probably do not work. Please send a [game report](https://github.com/burghr/xodus-nexus-armada-arm/issues/new?template=02-game-report.yml), also for games that work. |
+| A game works on an x86_64 PC, but not here | Games run through the FEX translation layer, so some games do not work on ARM. Games with kernel anti-cheat probably do not work. Please send a [game report](https://github.com/burghr/xodus-nexus-arm-port/issues/new?template=02-game-report.yml), also for games that work. |
 | A game shows "exited with code 255" when you quit it | Some games, for example DREDGE, end with that code also after a normal quit. If the game ran and saved normally, you can ignore it. |
 
 Tested devices: the AYN Odin 3. A user reported that an earlier version works on the Retroid Pocket 6. Reports from other devices are welcome.
@@ -153,7 +153,7 @@ Tested devices: the AYN Odin 3. A user reported that an earlier version works on
 | The app does not open | Run `~/.local/bin/xodus-nexus-fex` in Konsole and read the error. |
 | `git clone` asks for a username and password | The URL has a typo. GitHub asks for a sign-in when a repository does not exist. This repository is public and needs no sign-in. |
 
-If your problem is not here, [open an issue](https://github.com/burghr/xodus-nexus-armada-arm/issues/new/choose).
+If your problem is not here, [open an issue](https://github.com/burghr/xodus-nexus-arm-port/issues/new/choose).
 
 ## License
 

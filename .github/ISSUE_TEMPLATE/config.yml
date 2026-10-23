@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Known issues and fixes
-    url: https://github.com/burghr/xodus-nexus-armada-arm#known-issues
+    url: https://github.com/burghr/xodus-nexus-arm-port#known-issues
     about: Read this first. Many common problems have a fix there.
   - name: Xodus Nexus on x86_64 PCs (official build)
     url: https://github.com/domsvoboda/xodus-nexus/issues

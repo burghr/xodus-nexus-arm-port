@@ -1,6 +1,6 @@
 #!/bin/sh
 # Start the native arm64 Xodus Nexus AppImage on ArmadaOS.
-# https://github.com/burghr/xodus-nexus-armada-arm
+# https://github.com/burghr/xodus-nexus-arm-port
 #
 # The name and the paths come from the earlier x86_64 install. Keep them, so
 # that the Steam shortcuts of existing installs still work.

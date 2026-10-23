@@ -2,7 +2,7 @@
 # Remove what install.sh added, and the Steam shortcuts for Xodus Nexus.
 # Your games, the Xodus Nexus settings and sign-in, your KDE wallet, and
 # Google Chrome stay, unless you use the options below.
-# https://github.com/burghr/xodus-nexus-armada-arm
+# https://github.com/burghr/xodus-nexus-arm-port
 
 set -euo pipefail
 

@@ -8,7 +8,7 @@ body:
       value: |
         Thanks for the report. This is an unofficial side project, so an answer can take some time.
 
-        First, look at the **Known issues** section of the [README](https://github.com/burghr/xodus-nexus-armada-arm#known-issues). Many common problems have a fix there.
+        First, look at the **Known issues** section of the [README](https://github.com/burghr/xodus-nexus-arm-port#known-issues). Many common problems have a fix there.
 
         Report problems with this setup **here**, not to the Xodus Nexus developer.
   - type: input
