@@ -373,20 +373,30 @@ open_chrome_once() {
     info "Chrome is not installed as a Flatpak. Skipped."
     return
   fi
-  if [ -f "$DATA_DIR/chrome-opened" ]; then
+  # Chrome writes "First Run" in its profile when its first start is complete.
+  # Use that, not a marker of our own, so that a failed start is tried again.
+  local first_run="$HOME/.var/app/com.google.Chrome/config/google-chrome/First Run"
+  if [ -e "$first_run" ]; then
     info "Already done."
     return
   fi
   # The sign-in does not work until the Chrome terms are accepted one time.
   info "Chrome opens now. Accept its terms, then close Chrome to continue."
-  flatpak run "$installation" com.google.Chrome >/dev/null 2>&1 </dev/null || true
-  touch "$DATA_DIR/chrome-opened"
+  local status=0
+  flatpak run "$installation" com.google.Chrome >/dev/null 2>&1 </dev/null || status=$?
   # Chrome can still be closing after its window closes. Wait for it.
   local i=0
   while [ "$i" -lt 15 ] && flatpak ps --columns=application 2>/dev/null | grep '^com\.google\.Chrome$' >/dev/null; do
     sleep 1
     i=$((i + 1))
   done
+  if [ -e "$first_run" ]; then
+    info "Chrome is ready for the sign-in."
+  else
+    [ "$status" = 0 ] || info "Chrome stopped with exit code $status."
+    info "Chrome did not finish its first start, so the sign-in may not work yet."
+    info "Run ./install.sh again to open Chrome again."
+  fi
 }
 
 open_xodus() {

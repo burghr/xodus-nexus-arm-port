@@ -193,9 +193,28 @@ def set_icon(shortcuts, exe, icon):
     return False
 
 
+def backup(path):
+    """Copy the file to a new backup that never replaces an earlier one.
+
+    Two changes in the same second get the same time stamp, so add a number,
+    and create the file exclusively.
+    """
+    stamp = time.strftime('%Y%m%d-%H%M%S')
+    for number in range(1000):
+        name = f"{path}.bak-{stamp}" + (f"-{number}" if number else "")
+        try:
+            with open(path, "rb") as source, open(name, "xb") as target:
+                shutil.copyfileobj(source, target)
+        except FileExistsError:
+            continue
+        shutil.copystat(path, name)
+        return name
+    raise RuntimeError(f"cannot make a backup of {path}")
+
+
 def save(path, root):
     if os.path.exists(path):
-        shutil.copy2(path, f"{path}.bak-{time.strftime('%Y%m%d-%H%M%S')}")
+        backup(path)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     temporary = path + ".tmp"
     with open(temporary, "wb") as f:

@@ -126,8 +126,8 @@ The uninstaller removes the AppImage, the start script, the menu item, and the S
 
 | Option | What it also removes |
 |---|---|
-| `--remove-data` | The Xodus Nexus settings, the sign-in, the runtimes, and the Wine prefixes. Save games that are only in a prefix are lost. |
-| `--remove-games` | The games that Xodus Nexus installed in its game folder. Imported games stay. |
+| `--remove-data` | It signs out first, with the same sign-out as in **Settings**, so the sign-in is removed from the KDE wallet. Then it removes the Xodus Nexus settings, the runtimes, and the Wine prefixes. Save games that are only in a prefix are lost. |
+| `--remove-games` | The games that Xodus Nexus downloaded to its game folder. Other folders there, for example imported games, are removed only if you answer yes to a separate question. `-y` never removes them. |
 
 Each option shows what it removes and asks before it removes it.
 
