@@ -63,6 +63,8 @@ git pull
 
 You can also use the installer at any time to update. If there is a new release, it downloads it. Close Xodus Nexus first.
 
+This repository was named `xodus-nexus-armada-arm` before. If you cloned it with that name, your folder still has the old name, so use `cd xodus-nexus-armada-arm`. `git pull` still works, because GitHub forwards the old address.
+
 ### Earlier installs with the x86_64 build
 
 Earlier versions of these scripts installed the x86_64 build, which ran through FEX. If you have that install, run the steps in [Update](#update). The installer asks before it replaces the x86_64 build. Your sign-in, settings, games, and Steam shortcuts stay. The installer also removes the x86_64 libraries that the earlier install added.
