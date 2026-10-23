@@ -1,0 +1,108 @@
+name: Install or launcher problem
+description: The installer, the launcher, the sign-in, a download, an update, or Steam does not work on ArmadaOS.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. This is an unofficial side project, so an answer can take some time.
+
+        First, look at the **Known issues** section of the [README](https://github.com/burghr/xodus-nexus-armada-arm#known-issues). Many common problems have a fix there.
+
+        Report problems with this setup **here**, not to the Xodus Nexus developer.
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      description: The handheld model and its chip, for example "AYN Odin 3, Snapdragon 8 Elite".
+    validations:
+      required: true
+  - type: input
+    id: armadaos
+    attributes:
+      label: ArmadaOS version
+      description: "Run this in Konsole and paste the result: `grep VERSION= /etc/os-release`"
+    validations:
+      required: true
+  - type: input
+    id: launcher
+    attributes:
+      label: Xodus Nexus launcher version
+      description: Copy it from Xodus Nexus **Settings**, for example "0.3.11-arm.2". If the launcher does not open, write "does not open".
+    validations:
+      required: true
+  - type: input
+    id: backend
+    attributes:
+      label: Nexus backend and runtime versions
+      description: Copy them from **Settings**. If they are not installed, say so.
+  - type: dropdown
+    id: area
+    attributes:
+      label: What does not work?
+      options:
+        - The installer
+        - The launcher does not open
+        - Sign-in or the KDE wallet
+        - A download or a game install
+        - A game does not start
+        - A launcher update
+        - The Steam shortcut or "Add to Steam"
+        - The controller or the screen size
+        - Something else
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode
+      options:
+        - Desktop Mode
+        - Game Mode
+        - Both
+    validations:
+      required: true
+  - type: dropdown
+    id: wallet
+    attributes:
+      label: Does your KDE wallet have a password?
+      options:
+        - "No"
+        - "Yes"
+        - I do not know
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+      description: Copy the exact error message, if there is one.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        Attach the files that apply. Read them first, and remove private information.
+        - Installer problem: the full output of `./install.sh` in Konsole.
+        - Launcher, sign-in, or download problem: `~/.config/xodus-nexus/backend-diagnostics/backend.log`
+        - Game problem: `~/.local/share/xodus-nexus/logs/<game id>-latest.log`
+        - The launcher does not open: the output of `~/.local/bin/xodus-nexus-fex` in Konsole.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you submit
+      options:
+        - label: I read the Known issues section of the README.
+          required: true
+        - label: I ran `git pull` and `./install.sh` again, and the problem is still there.
+          required: true

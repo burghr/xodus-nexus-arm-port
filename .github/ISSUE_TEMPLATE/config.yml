@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Known issues and fixes
+    url: https://github.com/burghr/xodus-nexus-armada-arm#known-issues
+    about: Read this first. Many common problems have a fix there.
+  - name: Xodus Nexus on x86_64 PCs (official build)
+    url: https://github.com/domsvoboda/xodus-nexus/issues
+    about: Only for problems with the official build on an x86_64 PC. Do not report problems with this ARM setup there.

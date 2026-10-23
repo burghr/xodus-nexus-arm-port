@@ -129,6 +129,21 @@ The uninstaller removes the AppImage, the start script, the menu item, and the S
 
 Each option shows what it removes and asks before it removes it.
 
+## Known issues
+
+Read this before you open an issue. Many common problems have a fix here.
+
+| Problem | Fix |
+|---|---|
+| A download or a game start fails with `content-http 401` or "Microsoft content licensing rejected sign-in" | In **Settings**, update the backend to 0.2.11 or later. Then select **Sign out**, and sign in again. A sign-in again without a sign out first is not always enough. |
+| A game does not see the controller, or the controller acts like a mouse | Steam gave the game the **Web Browser** controller layout. In the game, press the Steam button. Open **Controller Settings**, select **Browse Layouts**, then **Templates**, then **Gamepad**. Steam saves it for that game. |
+| In Xodus Nexus, up or down on the controller does nothing on some buttons | The launcher moves up or down only to a button that is directly above or below. Press left or right first. This behavior comes from Xodus Nexus itself. |
+| A game works on an x86_64 PC, but not here | Games run through the FEX translation layer, so some games do not work on ARM. Games with kernel anti-cheat probably do not work. Please send a [game report](https://github.com/burghr/xodus-nexus-armada-arm/issues/new?template=02-game-report.yml), also for games that work. |
+| A game shows "exited with code 255" when you quit it | Some games, for example DREDGE, end with that code also after a normal quit. If the game ran and saved normally, you can ignore it. |
+| After a launcher update in Game Mode, the launcher may not open again | Install launcher updates in Desktop Mode. |
+
+Tested devices: the AYN Odin 3. A user reported that an earlier version works on the Retroid Pocket 6. Reports from other devices are welcome.
+
 ## Troubleshooting
 
 | Problem | Fix |
@@ -138,6 +153,8 @@ Each option shows what it removes and asks before it removes it.
 | "Google Chrome was not found" | Run `./install.sh` again without `--no-chrome`. |
 | The app does not open | Run `~/.local/bin/xodus-nexus-fex` in Konsole and read the error. |
 | `git clone` asks for a username and password | The URL has a typo. GitHub asks for a sign-in when a repository does not exist. This repository is public and needs no sign-in. |
+
+If your problem is not here, [open an issue](https://github.com/burghr/xodus-nexus-armada-arm/issues/new/choose).
 
 ## License
 

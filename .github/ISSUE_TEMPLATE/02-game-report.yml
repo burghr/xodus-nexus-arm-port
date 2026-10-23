@@ -1,0 +1,61 @@
+name: Game report
+description: Tell others how a game runs on your ARM handheld, good or bad.
+title: "[Game] "
+labels: ["game report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Reports for games that **work** help as much as reports for games that do not. Games run through FEX on ARM, so a game that works on an x86 PC can still fail here.
+  - type: input
+    id: game
+    attributes:
+      label: Game
+      description: The game name and edition, as Xodus Nexus shows it.
+    validations:
+      required: true
+  - type: dropdown
+    id: result
+    attributes:
+      label: How does it run?
+      options:
+        - Playable
+        - Playable with problems
+        - Starts, but not playable
+        - Does not start
+        - Does not download or install
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      description: The handheld model and its chip, for example "AYN Odin 3, Snapdragon 8 Elite".
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: The ArmadaOS version, and the launcher, backend, and runtime versions from Xodus Nexus **Settings**.
+    validations:
+      required: true
+  - type: input
+    id: fps
+    attributes:
+      label: Frame rate and settings
+      description: Optional. For example "60 fps, medium settings, 1080p".
+  - type: dropdown
+    id: controller
+    attributes:
+      label: Does the controller work in the game?
+      options:
+        - "Yes"
+        - Only after I changed the Steam controller layout to Gamepad
+        - "No"
+        - Not tested
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Problems, fixes that helped, and the game log (`~/.local/share/xodus-nexus/logs/<game id>-latest.log`) if the game does not start.
