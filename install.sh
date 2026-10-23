@@ -155,11 +155,17 @@ install_appimage() {
       exit 0
     fi
   fi
-  latest=$(curl -fsSL "$RELEASES_API" | python3 -I -c 'import json,sys; print(json.load(sys.stdin)["tag_name"])') \
-    || fail "Cannot read the latest release from GitHub."
-  [ "$installed" = arm64 ] && [ -f "$TAG_FILE" ] && current=$(cat "$TAG_FILE")
-  if [ "$current" = "$latest" ]; then
+  # Xodus Nexus can update itself from the same releases, so compare the
+  # checksum of the installed file, not a saved release tag.
+  local release sum_url latest_sum=""
+  release=$(curl -fsSL "$RELEASES_API") || fail "Cannot read the latest release from GitHub."
+  latest=$(printf '%s' "$release" | python3 -I -c 'import json,sys; print(json.load(sys.stdin)["tag_name"])')
+  sum_url=$(printf '%s' "$release" | python3 -I -c 'import json,sys; a=[x["browser_download_url"] for x in json.load(sys.stdin)["assets"] if x["name"].endswith("-arm64.AppImage.sha512sum")]; print(a[0] if a else "")')
+  [ -n "$sum_url" ] && latest_sum=$(curl -fsSL "$sum_url" | awk 'NR == 1 {print $1}')
+  [ "$installed" = arm64 ] && current=$(sha512sum "$APPIMAGE_FILE" | awk '{print $1}')
+  if [ -n "$latest_sum" ] && [ "$current" = "$latest_sum" ]; then
     info "Already installed: $latest"
+    printf '%s\n' "$latest" > "$TAG_FILE"
   else
     download_release
   fi
@@ -427,4 +433,4 @@ fi
 info "2. In Xodus Nexus, open Settings, then select \"Install Nexus runtime\"."
 info "   Games do not start without the runtime. Do this one time."
 info "3. In Game Mode, start \"Xodus Nexus\" from your Steam library."
-info "4. To update Xodus Nexus, run ./install.sh again."
+info "4. Xodus Nexus shows new updates when it starts. Install them in Settings, in Desktop Mode."

@@ -45,7 +45,15 @@ If Decky Loader is installed, the game artwork shows in Steam at once. Without D
 
 ### Update
 
-The arm64 build does not update itself. To update it, run the installer again in Desktop Mode:
+Xodus Nexus checks for a new arm64 build each time that it starts. If there is one, an update notice shows in the header. Do these steps:
+
+1. Open **Settings**.
+2. Install the launcher update.
+3. Select **Restart**.
+
+Install updates in Desktop Mode. In Game Mode, the restarted launcher runs outside of Steam, so Game Mode may not show it. The update checks the download, and it keeps a backup of the earlier build.
+
+Builds before `v0.3.11-arm.2` cannot update themselves. If you installed one of them, run the installer one time in Desktop Mode:
 
 ```bash
 cd xodus-nexus-armada-arm
@@ -53,7 +61,7 @@ git pull
 ./install.sh
 ```
 
-If there is a new release, the installer downloads it. Close Xodus Nexus first.
+You can also use the installer at any time to update. If there is a new release, it downloads it. Close Xodus Nexus first.
 
 ### Earlier installs with the x86_64 build
 
