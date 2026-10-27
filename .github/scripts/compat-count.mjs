@@ -19,7 +19,7 @@ export function parseReport(body) {
   try { data = JSON.parse(match[1]); } catch { return undefined; }
   if (!data || !STORE_ID.test(data.storeId) || typeof data.works !== 'boolean') return undefined;
   const launcher = clean(data.launcher, 40);
-  if (!/^\d+\.\d+\.\d+(-arm\.\d+)?$/.test(launcher)) return undefined;
+  if (!/^\d+\.\d+\.\d+(-arm\.\d+(\.\d+)?)?$/.test(launcher)) return undefined;
   return { storeId: data.storeId, title: clean(data.title, 120) || data.storeId, works: data.works, launcher };
 }
 
