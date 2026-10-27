@@ -82,6 +82,8 @@ async function main() {
     issues.push(...batch);
     if (batch.length < 100) break;
   }
+  // The label list can lag behind the label that this run just added, so always count the event issue.
+  if (issue && event.action !== 'deleted' && parseReport(issue.body) && !issues.some(entry => entry.number === issue.number)) issues.push(issue);
   const games = countReports(issues);
   const content = JSON.stringify({ schema: 1, games }, null, 2) + '\n';
   const current = await github(`/repos/${repo}/contents/${FILE}?ref=${BRANCH}`, { allow404: true });
