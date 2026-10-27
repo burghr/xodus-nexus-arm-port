@@ -131,6 +131,17 @@ The uninstaller removes the AppImage, the start script, the menu item, and the S
 
 Each option shows what it removes and asks before it removes it.
 
+## Game reports
+
+After you play a game for one minute or more, Nexus asks if the game worked. Each answer helps other ARM players. The library then shows the result for each game, for example "arm64 community: Playable (3 worked, 0 did not)".
+
+- A report is a public issue in this repository. It shows your GitHub username, the game, your answer, your device, and the Nexus versions. It does not contain your Microsoft account.
+- The first report asks you to sign in to GitHub one time. Nexus shows a code. Enter the code at github.com/login/device, for example on a phone.
+- A workflow counts the reports and closes each report issue. Only the reports for the newest Nexus version of a game count. Each user has one vote for each game and version.
+- To stop the questions, select **Do not ask again**.
+
+You can also write a report by hand with the **Game report** issue form.
+
 ## Known issues
 
 Read this before you open an issue. Many common problems have a fix here.

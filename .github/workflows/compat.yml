@@ -1,0 +1,27 @@
+name: Game reports
+
+# Counts the game reports that the arm64 launcher sends as issues.
+on:
+  issues:
+    types: [opened, edited, reopened, closed, labeled, unlabeled, deleted]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: compat-count
+  cancel-in-progress: false
+
+jobs:
+  count:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          sparse-checkout: .github/scripts
+      - run: node .github/scripts/compat-count.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
