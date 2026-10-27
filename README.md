@@ -10,7 +10,7 @@ These scripts install [Xodus Nexus](https://github.com/domsvoboda/xodus-nexus) o
 
 The installer uses a native arm64 build of the launcher from the [xodus-nexus-arm](https://github.com/burghr/xodus-nexus-arm) fork. The backend, the Wine runtime, and the games are still x86_64, and they run through the [FEX](https://github.com/FEX-Emu/FEX) x86 translation layer that ArmadaOS includes.
 
-Tested on an AYN Odin 3 (Snapdragon 8 Elite) with ArmadaOS 20261010 and Xodus Nexus 0.3.11 (backend 0.2.11). Sign-in, the game library, **Add to Steam**, and games work in Desktop Mode and in Game Mode.
+Tested on an AYN Odin 3 (Snapdragon 8 Elite) with ArmadaOS 20261010 and Xodus Nexus 0.4.0 (backend 0.2.12). Sign-in, the game library, **Add to Steam**, and games work in Desktop Mode and in Game Mode.
 
 ## Install
 
