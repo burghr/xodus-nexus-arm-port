@@ -1,3 +1,5 @@
+> **This project is no longer needed.** Xodus Nexus now has native ARM support, so you do not need this port to play PC Game Pass on an ARM handheld. Please use the official [Xodus Nexus](https://github.com/domsvoboda/xodus-nexus) release instead. This port was a fun project, and I learned a lot from it. Thank you to everyone who tested it and sent reports. I do not plan more updates for now, but I keep the repository here as a reference. Please support the upstream Xodus Nexus project and its developer.
+
 # Xodus Nexus on ArmadaOS (ARM64)
 
 > **An unofficial side project.** This is not an official port of Xodus Nexus. It is not part of Xodus Nexus, Xodus, ArmadaOS, or Microsoft. I made it because I wanted PC Game Pass on my ARM handheld, and I maintain it in my free time. I do my best to answer bug reports and to keep up with new Xodus Nexus releases, but sometimes it may take longer than you like.
